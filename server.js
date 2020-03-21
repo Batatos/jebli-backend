@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql');
+const port = process.env.PORT || 3000;
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -23,12 +24,12 @@ server.get('/stores', (req, res) => {
             console.log("Failed fetching stores: " + err);
             return;
         }
-        console.log("Fields are fetched");
+        console.log("Fields are fetched.");
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.json(rows);
     })
     
 })
 
-
-
-server.listen(3000);
+server.listen(port);

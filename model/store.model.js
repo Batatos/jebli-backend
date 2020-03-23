@@ -6,7 +6,7 @@ const storeSchema = mongoose.Schema({
         require: true,
         min: 6
     },
-    descirption: {
+    description: {
         type: String,
         require: true,
         min: 6,

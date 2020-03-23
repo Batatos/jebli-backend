@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../model/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const verify = require('./verifyToken');
 const { registerValidation, loginValidation } = require('./validation/authValidation');
 
 //validation
@@ -60,5 +61,13 @@ router.post('/login', async (req, res) => {
 
 
 })
+
+router.get('/users', verify, async (req,res) => {
+
+    User.find()
+    .then(users => res.json(users))
+    .catch(err => res.status(400).json('Error: '+err));
+})
+
 
 module.exports = router;

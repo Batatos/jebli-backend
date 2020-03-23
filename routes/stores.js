@@ -1,26 +1,26 @@
 const router = require('express').Router();
 const verify = require('./verifyToken');
-const { storeValidation } = require('./validation/storeValidation');
-let Store = require('../model/store.model');
+const { createStoreValidation } = require('./validation/storeValidation');
+const Store = require('../model/store.model');
 
-router.get('/stores', verify, async (req,res) => {
+router.get('/stores', async (req,res) => {
 
     Store.find()
-    .then(users => res.json(stores))
+    .then(stores => res.json(stores))
     .catch(err => res.status(400).json('Error: '+err));
 });
 
 router.post('/store', verify, async (req, res) => {
 
-    const { error } = storeValidation(req.body);
+    const { error } = createStoreValidation(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     // check if store exists
     const storeExist = await Store.findOne({email: req.body.name});
     if (storeExist) return res.status(400).send("Store Already exists . .");
 
-    //create user
-    const user = new User({
+    //create store
+    const store = new Store({
         name: req.body.name,
         description: req.body.description,
         working_hours: req.body.working_hours,
@@ -33,5 +33,32 @@ router.post('/store', verify, async (req, res) => {
         res.status(400).send(err);
     }
 });
+
+router.get('/store/:id', verify, async (req, res) => {
+    Store.findById(req.params.id)
+    .then(store => res.json(store))
+    .catch(err => res.status(400).json('Error: '+ err));
+});
+
+router.delete('/store/:id', verify, async (req, res) => {
+    Store.findByIdAndDelete(req.params.id)
+    .then(() => res.json('Store is deleted'))
+    .catch(err => res.status(400).json('Error: '+ err));
+});
+
+router.post('/store/:id/update', verify, async (req, res) => {
+    Store.findById(req.params.id)
+    .then( store => {
+        store.name = req.body.name;
+        store.description = req.body.description;
+        store.working_hours = req.body.working_hours;
+        store.working_days = req.body.working_days;
+
+        store.save()
+            .then(() => res.json('Store updated.'))
+            .catch(err => res.status(400).json('Error: '+ err));
+    })
+    .catch(err => res.status(400).json('Error: '+ err));
+})
 
 module.exports = router;

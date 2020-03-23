@@ -5,7 +5,7 @@ const createStoreValidation = (data) => {
 
     const schema = Joi.object({
         name: Joi.string().min(2).max(30).required(),
-        descirption: Joi.string().min(2).max(255).required(),
+        description: Joi.string().min(2).max(255).required(),
         working_hours: Joi.string().required(),
         working_days: Joi.string().required()
     });

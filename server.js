@@ -1,5 +1,30 @@
 const express = require('express');
 const mysql = require('mysql');
+const app = express();
+const mongoos = require('mongoose');
+const dotvenv = require('dotenv');
+const port = process.env.PORT || 3000;
+
+//Import Auth route
+const authRoute = require('./routes/auth');
+const testRoute = require('./routes/posts');
+
+
+dotvenv.config();
+
+//mongoDB
+const dbURL = process.env.MONGODB_CONNECT;
+mongoos.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true}
+    ).then(() => console.log('mongoDB Connected!'))
+    .catch(err => {
+    console.log('DB Connection Error: '+err.message);
+    });
+
+//Middleware
+app.use(express.json());
+
+app.use('/api',authRoute);
+app.use('/api', testRoute);
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -7,14 +32,13 @@ const connection = mysql.createConnection({
     password: '1q2w3e4r!',
     database: 'jebli'
 });
+ 
 
-const server = express();
-
-server.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.send({ message: 'Hello friend' });
 })
 
-server.get('/stores', (req, res) => {
+app.get('/stores', (req, res) => {
     console.log("Processing request: GET all stores . . .")
     
     const queryString = 'select * from stores';
@@ -23,12 +47,12 @@ server.get('/stores', (req, res) => {
             console.log("Failed fetching stores: " + err);
             return;
         }
-        console.log("Fields are fetched");
+        console.log("Fields are fetched.");
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.json(rows);
     })
     
 })
 
-
-
-server.listen(3000);
+app.listen(port);

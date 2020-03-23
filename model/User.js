@@ -4,12 +4,14 @@ const userSchema = mongoose.Schema({
     firstName: {
         type: String,
         require: true,
-        min: 6
+        min: 6,
+        trim: true
     },
     lastName: {
         type: String,
         require: true,
-        min: 6
+        min: 6,
+        trim: true
     },
     email: {
         type: String,
@@ -31,6 +33,8 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    timsestamps: true
 });
 
 module.exports = mongoose.model('User', userSchema);

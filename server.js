@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const mysql = require('mysql');
 const app = express();
 const mongoos = require('mongoose');
@@ -7,6 +8,7 @@ const port = process.env.PORT || 3000;
 
 //Import Auth route
 const authRoute = require('./routes/auth');
+const storesRoute = require('./routes/stores');
 const testRoute = require('./routes/posts');
 
 
@@ -21,9 +23,11 @@ mongoos.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true}
     });
 
 //Middleware
+app.use(cors());
 app.use(express.json());
 
 app.use('/api',authRoute);
+app.use('/api',storesRoute);
 app.use('/api', testRoute);
 
 const connection = mysql.createConnection({
@@ -55,4 +59,6 @@ app.get('/stores', (req, res) => {
     
 })
 
-app.listen(port);
+app.listen(port, () => {
+    console.log("Server is up and running on port: "+ port);
+});

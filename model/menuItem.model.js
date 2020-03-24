@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const menuModel = require('../model/menu.model');
 
-const storeSchema = mongoose.Schema({
+const menuItemSchema = mongoose.Schema({
     name: {
         type: String,
         require: true,
@@ -13,12 +12,11 @@ const storeSchema = mongoose.Schema({
         min: 6,
         max: 255
     },
-    working_hours: {
-        type: String,
-        require: true
+    isVegan: {
+        type: Boolean
     },
-    working_days: {
-        type: String,
+    price: {
+        type: Number,
         require: true
     },
     isActive: {
@@ -29,9 +27,16 @@ const storeSchema = mongoose.Schema({
          data: Buffer,
          contentType: String 
     },
-    menu: [menuModel]
+    timeToMake: {
+        type: String,
+        require: true
+    },
+    menu: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'menu'
+    }
 }, {
     timsestamps: true
 });
 
-module.exports = mongoose.model('Store', storeSchema);
+module.exports = mongoose.model('MenuItem', menuItemSchema);

@@ -2,6 +2,7 @@ const router = require('express').Router();
 const verify = require('./verifyToken');
 const { createStoreValidation } = require('./validation/storeValidation');
 const Store = require('../model/store.model');
+const Menu = require('../model/menu.model');
 
 router.get('/stores', async (req,res) => {
 
@@ -59,6 +60,21 @@ router.post('/store/:id/update', verify, async (req, res) => {
             .catch(err => res.status(400).json('Error: '+ err));
     })
     .catch(err => res.status(400).json('Error: '+ err));
-})
+});
+
+router.post('/store/:storeId/assignMenu/:menuId', verify, async (req, res) => {
+    const store = await Store.findById(req.params.storeId);
+    const menuObj = await Menu.findById(req.params.menuId);
+
+    console.log(menuObj);
+    store.menu = menuObj;
+
+    try{
+        const savedStore = await store.save();
+        res.send(savedStore);
+       }catch(err){
+        res.status(400).send(err);
+    }
+});
 
 module.exports = router;

@@ -5,9 +5,11 @@ const mongoos = require('mongoose');
 const dotvenv = require('dotenv');
 const port = process.env.PORT || 3000;
 
-//Import Auth route
+//Import routes
 const authRoute = require('./routes/auth');
 const storesRoute = require('./routes/stores');
+const menuItemRoute = require('./routes/menuItem');
+const menuRoute = require('./routes/menu');
 
 
 dotvenv.config();
@@ -26,6 +28,8 @@ app.use(express.json());
 
 app.use('/api',authRoute);
 app.use('/api',storesRoute);
+app.use('/api',menuItemRoute);
+app.use('/api',menuRoute);
 
 
 app.listen(port, () => {
